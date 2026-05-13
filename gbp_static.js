@@ -94,7 +94,7 @@ function makeLatentTruth(n, mode, rng){
 }
 
 class GBPStateJS{
-  constructor(){ this.initGrid({n:10,p0:1,gridW:100,shortcutW:100,seed:0,prior:'random',edgeMode:'smoothing'}); }
+  constructor(){ this.initGrid({n:10,p0:1,gridW:100,shortcutW:3000,seed:0,prior:'random',edgeMode:'smoothing'}); }
 
   initGrid(payload){
     this.n = clamp(parseInt(payload.n ?? 10),2,80); this.N=this.n*this.n;
@@ -471,4 +471,16 @@ $('mapBtn').onclick=()=>{ try{ STATE.solveMapOnce('base'); STATE.recordMetrics(S
 $('runBtn').onclick=async()=>{ if(running) return; running=true; setStatus('Running frontend GBP…'); try{ const d=await runFrontend(opts()); setStatus(`Ran frontend GBP in ${fmt(d.runMs)} ms.`); }catch(e){setStatus(e.message);} running=false; };
 $('stopBtn').onclick=()=>{ running=false; setStatus('Stop requested.'); };
 window.onresize=update;
-commit('base');
+function loadDefaultDemo(){
+  try{
+    STATE.initGrid(opts());
+    const count=parseInt(val('shortcutCount')||0);
+    if(count>0){
+      STATE.addRandomShortcuts(count,String(val('targetMode')||'current'),String(val('readout')||'base'));
+      STATE.recordMetrics(String(val('readout')||'base'));
+    }
+    commit(String(val('readout')||'base'));
+    setStatus('Default shortcut demo loaded. Click Run GBP.');
+  }catch(e){ setStatus(e.message); commit('base'); }
+}
+loadDefaultDemo();

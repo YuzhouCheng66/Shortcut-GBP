@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Interactive Gaussian BP Grid · Static Frontend</title>
+<title>Shortcut GBP · Interactive Demo</title>
 <style>
 :root{
   --bg:#050816; --panel:#0b1228d8; --panel2:#101a35d8; --line:#263554;
@@ -118,24 +118,24 @@ canvas{display:block; width:100%; height:100%}
     </div>
 
     <div class="section"><h3>Shortcuts</h3>
-      <div class="row"><label>random shortcut count</label><input id="shortcutCount" type="number" value="0" min="0"></div>
-      <div class="row"><label>shortcut precision</label><input id="shortcutW" type="number" value="1000" step="1"></div>
+      <div class="row"><label>random shortcut count</label><input id="shortcutCount" type="number" value="10" min="0"></div>
+      <div class="row"><label>shortcut precision</label><input id="shortcutW" type="number" value="3000" step="1"></div>
       <div class="row"><label>target z for shortcuts</label><select id="targetMode"><option value="current">current: z=μᵢ−μⱼ</option><option value="prior">prior: z=yᵢ−yⱼ</option><option value="zero">zero: z=0</option></select></div>
       <div class="row"><label>belief readout</label><select id="readout"><option value="base">base-only</option><option value="full">full graph</option></select></div>
-      <label class="check"><input id="dynamicRandom" type="checkbox">dynamic random: resample random shortcuts every R steps; manual shortcuts persist</label>
+      <label class="check"><input id="dynamicRandom" type="checkbox" checked>dynamic random: resample random shortcuts every R steps; manual shortcuts persist</label>
       <label class="check"><input id="anneal" type="checkbox">anneal shortcut precision to zero</label>
-      <div class="row"><label>refresh period R / anneal K</label><span style="display:grid;grid-template-columns:1fr 1fr;gap:6px"><input id="refreshR" type="number" value="5" min="1"><input id="annealK" type="number" value="200" min="1"></span></div>
+      <div class="row"><label>refresh period R / anneal K</label><span style="display:grid;grid-template-columns:1fr 1fr;gap:6px"><input id="refreshR" type="number" value="2" min="1"><input id="annealK" type="number" value="200" min="1"></span></div>
       <div class="compactNote">Manual shortcuts are persistent static edges. They are not removed by dynamic random refreshes. Every R steps, their target is refreshed as z=mu_i-mu_j and their messages are reset.</div>
       <div class="btns"><button id="randBtn">Add random</button><button id="clearBtn" class="secondary">Clear</button></div>
       <div class="btns"><button id="refreshBtn" class="secondary">Refresh targets</button><button id="resetBtn" class="secondary">Reset messages</button></div>
     </div>
 
     <div class="section"><h3>Run</h3>
-      <div class="row"><label>GBP steps per click</label><input id="steps" type="number" value="100" min="1"></div>
-      <div class="row"><label>metric every k steps</label><input id="metricEvery" type="number" value="10" min="1"></div>
+      <div class="row"><label>GBP steps per click</label><input id="steps" type="number" value="70" min="1"></div>
+      <div class="row"><label>metric every k steps</label><input id="metricEvery" type="number" value="1" min="1"></div>
       <div class="row"><label>damping</label><input id="damping" type="number" value="0" min="0" max="0.99" step="0.05"></div>
       <div class="btns"><button id="runBtn">Run GBP</button><button id="stopBtn" class="secondary">Stop</button></div>
-      <div class="status" id="status">Ready.</div>
+      <div class="status" id="status">Default shortcut demo loaded. Click Run GBP.</div>
     </div>
   </aside>
 
