@@ -117,10 +117,10 @@ This creates a **zero-residual shortcut**. It does not add a new physical measur
 
 | metric | definition |
 |---|---|
-| residual / initial | `||b - A μ|| / ||b - A y||` |
+| residual / initial | `‖b - A μ‖ / ‖b - A y‖` |
 | energy gap | current energy minus MAP energy |
 | relative gap | energy gap normalized by the initial gap |
-| MAP error | `||μ - x*|| / ||x*||` |
+| MAP error | `‖μ - x*‖ / ‖x*‖` |
 
 The MAP reference `x*` is solved once when the graph is built.
 
