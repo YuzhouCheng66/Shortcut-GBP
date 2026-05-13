@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Interactive Gaussian BP Grid · Static Frontend</title>
+<style>
+:root{
+  --bg:#050816; --panel:#0b1228d8; --panel2:#101a35d8; --line:#263554;
+  --text:#e8eefc; --muted:#92a2bd; --cyan:#67e8f9; --blue:#60a5fa;
+  --pink:#fb7185; --green:#34d399; --amber:#fbbf24; --violet:#a78bfa;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; color:var(--text); overflow:hidden;
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+  background:
+    radial-gradient(900px 680px at 16% -12%,#1d4ed855,transparent 66%),
+    radial-gradient(700px 620px at 105% 2%,#06b6d444,transparent 58%),
+    radial-gradient(560px 460px at 48% 110%,#7c3aed30,transparent 62%),
+    linear-gradient(180deg,#050816,#0a1022 48%,#050816);
+}
+.app{
+  height:100vh; display:grid;
+  grid-template-columns:minmax(270px,302px) minmax(620px,1fr) minmax(250px,286px);
+  gap:10px; padding:10px;
+}
+.card{
+  border:1px solid #ffffff18; border-radius:20px; overflow:hidden;
+  background:linear-gradient(180deg,#111a36dd,#071024e0);
+  box-shadow:0 18px 60px #0009,inset 0 1px 0 #ffffff12;
+  backdrop-filter:blur(14px);
+}
+.left,.right{padding:14px; overflow:auto; scrollbar-width:thin}
+.title{font-size:20px; font-weight:840; letter-spacing:-.04em; margin:0 0 4px}
+.sub{font-size:11px; color:var(--muted); line-height:1.35; margin:0 0 10px}
+.section{margin:12px 0 10px; padding-top:12px; border-top:1px solid #ffffff12}
+.section:first-of-type{margin-top:8px}
+h3{font-size:11px; color:#cbd5e1; text-transform:uppercase; letter-spacing:.14em; margin:0 0 8px}
+.row{display:grid; grid-template-columns:1fr 104px; gap:8px; align-items:center; margin:7px 0}
+.row label{font-size:11.5px; color:#cbd5e1; line-height:1.2}
+input,select{
+  width:100%; border:1px solid #334155; background:#020617aa; color:var(--text);
+  border-radius:11px; padding:7px 8px; outline:none; font-size:12px;
+}
+input:focus,select:focus{border-color:var(--cyan); box-shadow:0 0 0 3px #67e8f920}
+.mode2{display:grid; grid-template-columns:1fr 1fr; gap:7px; margin:8px 0 6px}
+.mode2 label{
+  display:block; position:relative; cursor:pointer; border:1px solid #ffffff14; border-radius:14px;
+  background:#02061788; padding:9px 8px 8px; min-height:64px;
+}
+.mode2 input{position:absolute; opacity:0; pointer-events:none}
+.mode2 .name{display:block; font-size:12px; font-weight:780; color:#e0f2fe; margin-bottom:4px}
+.mode2 .desc{display:block; font-size:10.5px; line-height:1.25; color:#94a3b8}
+.mode2 label:has(input:checked){border-color:#67e8f9aa; box-shadow:0 0 0 3px #67e8f91c, inset 0 0 24px #0891b220}
+.check{display:flex; align-items:flex-start; gap:8px; margin:7px 0; color:#cbd5e1; font-size:11.5px; line-height:1.25}
+.check input{width:auto; accent-color:#67e8f9; margin-top:2px}
+.btns{display:grid; grid-template-columns:1fr 1fr; gap:7px; margin:8px 0}
+button{
+  border:0; border-radius:12px; padding:9px 10px; font-weight:800; font-size:12px;
+  color:#021018; background:linear-gradient(135deg,#67e8f9,#60a5fa); cursor:pointer;
+  box-shadow:0 10px 28px #0891b240;
+}
+button.secondary{color:var(--text); background:#17203dcc; border:1px solid #ffffff18; box-shadow:none}
+button.warn{background:linear-gradient(135deg,#fbbf24,#fb7185); color:#16070a}
+button:active{transform:translateY(1px)}
+.status{font-size:11.5px; color:#a7f3d0; min-height:32px; line-height:1.35; margin-top:8px}
+.main{min-width:0; display:grid; grid-template-rows:34px minmax(0,1fr) 152px; gap:10px}
+.topBar{
+  min-width:0; display:flex; align-items:center; justify-content:space-between; gap:10px;
+  padding:0 12px 0 14px; overflow:hidden;
+}
+.canvasWrap{position:relative; overflow:hidden}
+canvas{display:block; width:100%; height:100%}
+.badge,.hint{
+  flex:0 1 auto; padding:7px 10px; border-radius:999px; font-size:11.5px;
+  border:1px solid #ffffff18; background:#020617b8; backdrop-filter:blur(10px);
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.badge{color:#dbeafe; max-width:58%}
+.hint{color:#a7f3d0; max-width:42%; text-align:right}
+.chartWrap{padding:10px 12px 8px}
+#chart{height:112px}
+.legend{display:flex; gap:10px; align-items:center; flex-wrap:wrap; font-size:11.5px; color:var(--muted); margin-top:6px}
+.dot{display:inline-block; width:9px; height:9px; border-radius:99px; margin-right:5px}
+.right{padding:12px}
+.big{font-size:24px; line-height:1; font-weight:880; letter-spacing:-.055em}
+.small{font-size:10.5px; color:#94a3b8; line-height:1.35}
+.kpi{display:grid; grid-template-columns:1fr 1fr; gap:7px; margin:9px 0 6px}
+.kpi div{padding:9px 9px 8px; border-radius:13px; background:#02061788; border:1px solid #ffffff14}
+.kpi label{display:block; color:#94a3b8; font-size:10px; margin-bottom:3px}
+.kpi b{font-size:15px; font-variant-numeric:tabular-nums}
+.stat{display:grid; grid-template-columns:1fr auto; gap:8px; padding:7px 0; border-bottom:1px solid #ffffff0e}
+.stat span:first-child{color:#aebbd3; font-size:11px}
+.stat b{font-size:12px; font-variant-numeric:tabular-nums; text-align:right}
+.compactNote{margin-top:8px; padding:8px; border:1px solid #ffffff12; border-radius:12px; background:#0206177a; color:#9fb1ce; font-size:10.5px; line-height:1.35}
+.codeTiny{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; color:#c4b5fd}
+@media(max-width:1160px){
+  body{overflow:auto}.app{height:auto; min-height:100vh; grid-template-columns:1fr}.main{min-height:760px}.left,.right{max-height:none}
+}
+@supports not selector(:has(*)){.mode2 label.active{border-color:#67e8f9aa; box-shadow:0 0 0 3px #67e8f91c}}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="card left">
+    <h1 class="title">Shortcut GBP</h1>
+
+    <div class="section"><h3>Grid</h3>
+      <div class="row"><label>grid size n×n</label><input id="n" type="number" value="10" min="2" max="80"></div>
+      <div class="row"><label>prior precision p₀</label><input id="p0" type="number" value="1" step="0.1"></div>
+      <div class="row"><label>grid edge precision w</label><input id="gridW" type="number" value="100" step="1"></div>
+      <div class="row"><label>seed</label><input id="seed" type="number" value="0"></div>
+      <div class="row"><label>prior field</label><select id="prior"><option value="random">random</option><option value="smooth-random">smooth random</option><option value="sinusoid">sinusoid</option><option value="blocks">blocks</option></select></div>
+      <div class="mode2" id="edgeModeBox">
+        <label><input type="radio" name="edgeMode" value="smoothing" checked><span class="name">smoothing</span><span class="desc">base edges use z=0, forcing neighbors equal.</span></label>
+        <label><input type="radio" name="edgeMode" value="noisy"><span class="name">noisy measurement</span><span class="desc">latent x*: y=x*+ν, z=x*ᵢ−x*ⱼ+ε.</span></label>
+      </div>
+      <div class="btns"><button id="buildBtn">Build + solve MAP</button><button id="mapBtn" class="secondary">Recompute MAP once</button></div>
+    </div>
+
+    <div class="section"><h3>Shortcuts</h3>
+      <div class="row"><label>random shortcut count</label><input id="shortcutCount" type="number" value="0" min="0"></div>
+      <div class="row"><label>shortcut precision</label><input id="shortcutW" type="number" value="1000" step="1"></div>
+      <div class="row"><label>target z for shortcuts</label><select id="targetMode"><option value="current">current: z=μᵢ−μⱼ</option><option value="prior">prior: z=yᵢ−yⱼ</option><option value="zero">zero: z=0</option></select></div>
+      <div class="row"><label>belief readout</label><select id="readout"><option value="base">base-only</option><option value="full">full graph</option></select></div>
+      <label class="check"><input id="dynamicRandom" type="checkbox">dynamic random: resample random shortcuts every R steps; manual shortcuts persist</label>
+      <label class="check"><input id="anneal" type="checkbox">anneal shortcut precision to zero</label>
+      <div class="row"><label>refresh period R / anneal K</label><span style="display:grid;grid-template-columns:1fr 1fr;gap:6px"><input id="refreshR" type="number" value="5" min="1"><input id="annealK" type="number" value="200" min="1"></span></div>
+      <div class="compactNote">Manual shortcuts are persistent static edges. They are not removed by dynamic random refreshes. Every R steps, their target is refreshed as z=mu_i-mu_j and their messages are reset.</div>
+      <div class="btns"><button id="randBtn">Add random</button><button id="clearBtn" class="secondary">Clear</button></div>
+      <div class="btns"><button id="refreshBtn" class="secondary">Refresh targets</button><button id="resetBtn" class="secondary">Reset messages</button></div>
+    </div>
+
+    <div class="section"><h3>Run</h3>
+      <div class="row"><label>GBP steps per click</label><input id="steps" type="number" value="100" min="1"></div>
+      <div class="row"><label>metric every k steps</label><input id="metricEvery" type="number" value="10" min="1"></div>
+      <div class="row"><label>damping</label><input id="damping" type="number" value="0" min="0" max="0.99" step="0.05"></div>
+      <div class="btns"><button id="runBtn">Run GBP</button><button id="stopBtn" class="secondary">Stop</button></div>
+      <div class="status" id="status">Ready.</div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="topBar">
+      <div class="badge" id="badge">frontend GBP</div>
+      <div class="hint">Manual shortcut: click one node, then another node.</div>
+    </div>
+    <section class="card canvasWrap">
+      <canvas id="grid"></canvas>
+    </section>
+    <section class="card chartWrap">
+      <canvas id="chart"></canvas>
+      <div class="legend"><span><i class="dot" style="background:var(--cyan)"></i>residual / initial</span><span><i class="dot" style="background:var(--green)"></i>energy gap</span><span><i class="dot" style="background:var(--pink)"></i>MAP error</span></div>
+    </section>
+  </main>
+
+  <aside class="card right">
+    <div class="big" id="iterBig">0</div>
+    <div class="small">frontend GBP iterations</div>
+    <div class="kpi"><div><label>residual / initial</label><b id="resid">—</b></div><div><label>MAP error</label><b id="merr">—</b></div><div><label>energy gap</label><b id="egap">—</b></div><div><label>relative gap</label><b id="rgap">—</b></div></div>
+    <div class="section"><h3>Graph</h3>
+      <div class="stat"><span>variables</span><b id="vars">—</b></div>
+      <div class="stat"><span>edges</span><b id="edges">—</b></div>
+      <div class="stat"><span>shortcuts</span><b id="shorts">—</b></div>
+      <div class="stat"><span>random / manual</span><b id="shortcutSplit">—</b></div>
+      <div class="stat"><span>edge mode</span><b id="edgeModeStat">—</b></div>
+      <div class="stat"><span>grid z std</span><b id="gridZStd">—</b></div>
+      <div class="stat"><span>selected</span><b id="selected">none</b></div>
+    </div>
+    <div class="section"><h3>MAP</h3>
+      <div class="stat"><span>solver</span><b id="solver">—</b></div>
+      <div class="stat"><span>solve time</span><b id="solveMs">—</b></div>
+      <div class="stat"><span>solve residual</span><b id="solveRel">—</b></div>
+      <div class="stat"><span>reference</span><b id="mapMode">base</b></div>
+      <div class="compactNote">MAP is solved once at build time. Residual is normalized by the initial residual ||b-Ay||. Shortcut edits keep the same reference unless you press <span class="codeTiny">Recompute MAP once</span>.</div>
+    </div>
+  </aside>
+</div>
+
+<script src="gbp_static.js"></script>
+</body>
+</html>
