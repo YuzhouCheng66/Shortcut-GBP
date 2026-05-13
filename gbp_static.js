@@ -94,14 +94,14 @@ function makeLatentTruth(n, mode, rng){
 }
 
 class GBPStateJS{
-  constructor(){ this.initGrid({n:10,p0:1,gridW:100,shortcutW:3000,seed:0,prior:'random',edgeMode:'smoothing'}); }
+  constructor(){ this.initGrid({n:10,p0:1,gridW:100,shortcutW:3000,seed:0,prior:'random',edgeMode:'noisy'}); }
 
   initGrid(payload){
     this.n = clamp(parseInt(payload.n ?? 10),2,80); this.N=this.n*this.n;
     this.p0 = Math.max(EPS, Number(payload.p0 ?? 1));
     this.gridW = Math.max(0, Number(payload.gridW ?? 100));
     this.shortcutW = Math.max(0, Number(payload.shortcutW ?? 100));
-    const mode = String(payload.edgeMode ?? payload.edgeObsMode ?? 'smoothing').toLowerCase();
+    const mode = String(payload.edgeMode ?? payload.edgeObsMode ?? 'noisy').toLowerCase();
     this.edgeObsMode = ['noisy','measurement','relative','relative-noisy'].includes(mode) ? 'noisy' : 'smoothing';
     this.rng = new RNG(parseInt(payload.seed ?? 0));
     const priorMode = String(payload.prior ?? 'random');

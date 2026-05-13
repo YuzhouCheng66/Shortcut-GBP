@@ -111,8 +111,8 @@ canvas{display:block; width:100%; height:100%}
       <div class="row"><label>seed</label><input id="seed" type="number" value="0"></div>
       <div class="row"><label>prior field</label><select id="prior"><option value="random">random</option><option value="smooth-random">smooth random</option><option value="sinusoid">sinusoid</option><option value="blocks">blocks</option></select></div>
       <div class="mode2" id="edgeModeBox">
-        <label><input type="radio" name="edgeMode" value="smoothing" checked><span class="name">smoothing</span><span class="desc">base edges use z=0, forcing neighbors equal.</span></label>
-        <label><input type="radio" name="edgeMode" value="noisy"><span class="name">noisy measurement</span><span class="desc">latent x*: y=x*+ν, z=x*ᵢ−x*ⱼ+ε.</span></label>
+        <label><input type="radio" name="edgeMode" value="smoothing"><span class="name">smoothing</span><span class="desc">base edges use z=0, forcing neighbors equal.</span></label>
+        <label><input type="radio" name="edgeMode" value="noisy" checked><span class="name">noisy measurement</span><span class="desc">latent x*: y=x*+ν, z=x*ᵢ−x*ⱼ+ε.</span></label>
       </div>
       <div class="btns"><button id="buildBtn">Build + solve MAP</button><button id="mapBtn" class="secondary">Recompute MAP once</button></div>
     </div>
