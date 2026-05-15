@@ -429,8 +429,8 @@ function drawChart(){
   if(!S) return; const d=S.history||[], r=chart.getBoundingClientRect(); cctx.clearRect(0,0,r.width,r.height);
   if(d.length<2){ cctx.fillStyle='rgba(255,255,255,.45)'; cctx.font='12px system-ui'; cctx.fillText('Run GBP to show metric curves.',14,24); return; }
   const p={l:42,t:8,r:10,b:24}, W=r.width-p.l-p.r, H=r.height-p.t-p.b, x0=0, x1=Math.max(1,d[d.length-1].iter);
-  const vals=d.flatMap(o=>[o.residual,o.relEnergyGap,o.mapError]).filter(x=>x>0&&isFinite(x)); let ymin=Math.min(-12,...vals.map(x=>Math.log10(x))), ymax=Math.max(0,...vals.map(x=>Math.log10(x)));
-  const X=x=>p.l+(x-x0)/(x1-x0+1e-12)*W, Y=v=>p.t+(ymax-Math.log10(Math.max(v,1e-14)))/(ymax-ymin+1e-12)*H;
+  const vals=d.flatMap(o=>[o.residual,o.relEnergyGap,o.mapError]).filter(x=>x>0&&isFinite(x)); let ymin=-12, ymax=Math.max(0,...vals.map(x=>Math.log10(Math.max(x,1e-12))));
+  const X=x=>p.l+(x-x0)/(x1-x0+1e-12)*W, Y=v=>p.t+(ymax-Math.log10(Math.max(v,1e-12)))/(ymax-ymin+1e-12)*H;
   cctx.strokeStyle='rgba(255,255,255,.12)'; cctx.lineWidth=1; cctx.font='10px ui-monospace,monospace';
   for(let k=Math.ceil(ymin);k<=Math.floor(ymax);k++){ let y=Y(10**k); cctx.beginPath(); cctx.moveTo(p.l,y); cctx.lineTo(p.l+W,y); cctx.stroke(); cctx.fillStyle='rgba(255,255,255,.38)'; cctx.fillText('1e'+k,4,y+4); }
   const tickN=Math.min(5,Math.max(1,Math.floor(x1))); cctx.textAlign='center'; cctx.textBaseline='top';
