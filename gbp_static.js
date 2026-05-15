@@ -388,7 +388,7 @@ class GBPStateJS{
     const mapError=norm(mu.map((v,i)=>v-ref.xstar[i]))/Math.max(norm(ref.xstar),EPS);
     const rec={iter:this.iter,residual,residualB,energyGap:gap,relEnergyGap:gap/Math.max(Math.abs(ref.ey-ref.estar),EPS),mapError,energy:Emu};
     if(this.history.length && this.history[this.history.length-1].iter===this.iter) this.history[this.history.length-1]=rec;
-    else { this.history.push(rec); if(this.history.length>2000) this.history=this.history.slice(-2000); }
+    else { this.history.push(rec); if(this.history.length>20000) this.history=this.history.slice(-20000); }
     return rec;
   }
   snapshot(readout='base'){
@@ -403,7 +403,7 @@ class GBPStateJS{
       p0:this.p0,gridW:this.gridW,shortcutW:this.shortcutW,edgeObsMode:this.edgeObsMode,gridZStd:std(gridZ)
     };
     if(ref){ Object.assign(stats,{mapMode:ref.mode,solver:ref.solver,solveMs:ref.solveMs,solveRelResidual:ref.relResidual,initialResidualNorm:ref.r0Norm,bNorm:ref.bNorm,nnzA:ref.nnzA,nnzFactor:ref.nnzFactor,Estar:ref.estar,Ey:ref.ey}); }
-    return {stats,y:this.y.slice(),mu,shortcuts,history:this.history.slice(-600)};
+    return {stats,y:this.y.slice(),mu,shortcuts,history:this.history.slice()};
   }
 }
 
@@ -428,11 +428,14 @@ function drawGrid(){
 function drawChart(){
   if(!S) return; const d=S.history||[], r=chart.getBoundingClientRect(); cctx.clearRect(0,0,r.width,r.height);
   if(d.length<2){ cctx.fillStyle='rgba(255,255,255,.45)'; cctx.font='12px system-ui'; cctx.fillText('Run GBP to show metric curves.',14,24); return; }
-  const p={l:42,t:8,r:10,b:20}, W=r.width-p.l-p.r, H=r.height-p.t-p.b, x0=d[0].iter, x1=d[d.length-1].iter;
+  const p={l:42,t:8,r:10,b:24}, W=r.width-p.l-p.r, H=r.height-p.t-p.b, x0=0, x1=Math.max(1,d[d.length-1].iter);
   const vals=d.flatMap(o=>[o.residual,o.relEnergyGap,o.mapError]).filter(x=>x>0&&isFinite(x)); let ymin=Math.min(-12,...vals.map(x=>Math.log10(x))), ymax=Math.max(0,...vals.map(x=>Math.log10(x)));
   const X=x=>p.l+(x-x0)/(x1-x0+1e-12)*W, Y=v=>p.t+(ymax-Math.log10(Math.max(v,1e-14)))/(ymax-ymin+1e-12)*H;
   cctx.strokeStyle='rgba(255,255,255,.12)'; cctx.lineWidth=1; cctx.font='10px ui-monospace,monospace';
   for(let k=Math.ceil(ymin);k<=Math.floor(ymax);k++){ let y=Y(10**k); cctx.beginPath(); cctx.moveTo(p.l,y); cctx.lineTo(p.l+W,y); cctx.stroke(); cctx.fillStyle='rgba(255,255,255,.38)'; cctx.fillText('1e'+k,4,y+4); }
+  const tickN=Math.min(5,Math.max(1,Math.floor(x1))); cctx.textAlign='center'; cctx.textBaseline='top';
+  for(let i=0;i<=tickN;i++){ const it=Math.round(x1*i/tickN), x=X(it); cctx.strokeStyle='rgba(255,255,255,.10)'; cctx.beginPath(); cctx.moveTo(x,p.t); cctx.lineTo(x,p.t+H); cctx.stroke(); cctx.fillStyle='rgba(255,255,255,.42)'; cctx.fillText(String(it),x,p.t+H+6); }
+  cctx.textAlign='start'; cctx.textBaseline='alphabetic';
   for(const [col,fn] of [['#67e8f9',o=>o.residual],['#34d399',o=>o.relEnergyGap],['#fb7185',o=>o.mapError]]){ cctx.strokeStyle=col; cctx.lineWidth=2.35; cctx.beginPath(); d.forEach((o,i)=>{ let x=X(o.iter), y=Y(fn(o)); if(i)cctx.lineTo(x,y); else cctx.moveTo(x,y); }); cctx.stroke(); }
 }
 function updateStats(){
