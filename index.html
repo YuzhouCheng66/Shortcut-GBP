@@ -121,12 +121,12 @@ canvas{display:block; width:100%; height:100%}
     <div class="section"><h3>Shortcuts</h3>
       <div class="row"><label>random shortcut count</label><input id="shortcutCount" type="number" value="10" min="0"></div>
       <div class="row"><label>shortcut precision</label><input id="shortcutW" type="number" value="3000" step="1"></div>
-      <div class="row"><label>target z for shortcuts</label><select id="targetMode"><option value="current">current: z=xᵗ,i−xᵗ,j</option><option value="prior">prior: z=x⁰,i−x⁰,j</option><option value="zero">zero: z=0</option></select></div>
+      <div class="row"><label>target z for shortcuts</label><select id="targetMode"><option value="current">current: z=xᵗᵢ−xᵗⱼ</option><option value="prior">prior: z=x⁰ᵢ−x⁰ⱼ</option><option value="zero">zero: z=0</option></select></div>
       <div class="row"><label>belief readout</label><select id="readout"><option value="base">base-only</option><option value="full">full graph</option></select></div>
       <label class="check"><input id="dynamicRandom" type="checkbox" checked>dynamic random: resample random shortcuts every R steps; manual shortcuts persist</label>
       <label class="check"><input id="anneal" type="checkbox">anneal shortcut precision to zero</label>
       <div class="row"><label>refresh period R / anneal K</label><span style="display:grid;grid-template-columns:1fr 1fr;gap:6px"><input id="refreshR" type="number" value="2" min="1"><input id="annealK" type="number" value="200" min="1"></span></div>
-      <div class="compactNote">Manual shortcuts are persistent static edges. They are not removed by dynamic random refreshes. Every R steps, each shortcut's target is refreshed as z=xᵗ,i-xᵗ,j and its messages are reset.</div>
+      <div class="compactNote">Manual shortcuts are persistent static edges. They are not removed by dynamic random refreshes. Every R steps, each shortcut's target is refreshed as z=xᵗᵢ-xᵗⱼ and its messages are reset.</div>
       <div class="btns"><button id="randBtn">Add random</button><button id="clearBtn" class="secondary">Clear</button></div>
       <div class="btns"><button id="refreshBtn" class="secondary">Refresh targets</button><button id="resetBtn" class="secondary">Reset messages</button></div>
     </div>
@@ -172,7 +172,7 @@ canvas{display:block; width:100%; height:100%}
       <div class="stat"><span>solve time</span><b id="solveMs">—</b></div>
       <div class="stat"><span>solve residual</span><b id="solveRel">—</b></div>
       <div class="stat"><span>reference</span><b id="mapMode">base</b></div>
-      <div class="compactNote">MAP is solved once at build time. Residual is normalized by the initial residual ||b-Ax⁰||. Shortcut edits keep the same reference unless you press <span class="codeTiny">Recompute MAP once</span>.</div>
+      <div class="compactNote">MAP is solved once at build time. Shortcut edits keep the same reference unless you press <span class="codeTiny">Recompute MAP once</span>.</div>
     </div>
   </aside>
 </div>

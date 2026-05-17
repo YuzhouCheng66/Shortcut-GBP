@@ -24,7 +24,7 @@ The page opens with the recommended shortcut setting already loaded:
 | random shortcuts | `10` |
 | shortcut precision | `3000` |
 | max grid size | `100 × 100` |
-| shortcut target | `current: z = xᵗ,i − xᵗ,j` |
+| shortcut target | `current: z = xᵗᵢ − xᵗⱼ` |
 | dynamic refresh | on |
 | refresh period `R` | `2` |
 | GBP steps per click | `70` |
@@ -73,7 +73,7 @@ Shortcut colors:
 Manual shortcuts: click one node, then another node. Manual edges stay fixed. Every `R` steps, each shortcut's target is refreshed as
 
 ```text
-z_ij = xᵗ,i - xᵗ,j
+z_ij = xᵗᵢ - xᵗⱼ
 ```
 
 and its messages are reset.
@@ -107,7 +107,7 @@ and its messages are reset.
 The main shortcut mode is:
 
 ```text
-current: z = xᵗ,i - xᵗ,j
+current: z = xᵗᵢ - xᵗⱼ
 ```
 
 This creates a **zero-residual shortcut**. It does not add a new physical measurement; it changes how correction information moves through GBP.
