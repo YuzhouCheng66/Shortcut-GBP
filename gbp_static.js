@@ -441,7 +441,7 @@ function drawChart(){
 function updateStats(){
   if(!S) return; const st=S.stats, last=(S.history||[]).at(-1)||{};
   $('iterBig').textContent=st.iter; $('vars').textContent=st.N; $('edges').textContent=st.edgeCount; $('shorts').textContent=st.shortcutCount; $('selected').textContent=selected>=0?selected:'none';
-  $('resid').textContent=fmt(last.residual); $('merr').textContent=fmt(last.mapError); $('egap').textContent=fmt(last.energyGap); $('rgap').textContent=fmt(last.relEnergyGap);
+  $('resid').textContent=fmt(last.residual); $('merr').textContent=fmt(last.mapError); $('egap').textContent=fmt(last.relEnergyGap);
   $('solver').textContent=st.solver||'—'; $('solveMs').textContent=fmt(st.solveMs)+' ms'; $('solveRel').textContent=fmt(st.solveRelResidual); $('mapMode').textContent=st.mapMode||'base';
   $('edgeModeStat').textContent=st.edgeObsMode||'—'; $('gridZStd').textContent=fmt(st.gridZStd); $('shortcutSplit').textContent=`${st.randomShortcutCount||0} / ${st.manualShortcutCount||0}`;
   $('badge').textContent=`iter ${st.iter} · ${st.N} vars · ${st.edgeObsMode||'base'} · frontend GBP`;

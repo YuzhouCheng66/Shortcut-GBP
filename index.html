@@ -91,6 +91,7 @@ canvas{display:block; width:100%; height:100%}
 .kpi div{padding:9px 9px 8px; border-radius:13px; background:#02061788; border:1px solid #ffffff14}
 .kpi label{display:block; color:#94a3b8; font-size:10px; margin-bottom:3px}
 .kpi b{font-size:15px; font-variant-numeric:tabular-nums}
+.formulaText{display:block; color:#dbeafe; font-size:9.5px; line-height:1.24; font-weight:720; white-space:nowrap}
 .stat{display:grid; grid-template-columns:1fr auto; gap:8px; padding:7px 0; border-bottom:1px solid #ffffff0e}
 .stat span:first-child{color:#aebbd3; font-size:11px}
 .stat b{font-size:12px; font-variant-numeric:tabular-nums; text-align:right}
@@ -149,14 +150,14 @@ canvas{display:block; width:100%; height:100%}
     </section>
     <section class="card chartWrap">
       <canvas id="chart"></canvas>
-      <div class="legend"><span><i class="dot" style="background:var(--cyan)"></i>residual / initial</span><span><i class="dot" style="background:var(--green)"></i>energy gap</span><span><i class="dot" style="background:var(--pink)"></i>MAP error</span></div>
+      <div class="legend"><span><i class="dot" style="background:var(--cyan)"></i>residual/initial</span><span><i class="dot" style="background:var(--green)"></i>energy gap/initial</span><span><i class="dot" style="background:var(--pink)"></i>MAP error</span></div>
     </section>
   </main>
 
   <aside class="card right">
     <div class="big" id="iterBig">0</div>
     <div class="small">frontend GBP iterations</div>
-    <div class="kpi"><div><label>residual / initial</label><b id="resid">—</b></div><div><label>MAP error</label><b id="merr">—</b></div><div><label>energy gap</label><b id="egap">—</b></div><div><label>relative gap</label><b id="rgap">—</b></div></div>
+    <div class="kpi"><div><label>residual/initial</label><b id="resid">—</b></div><div><label>MAP error</label><b id="merr">—</b></div><div><label>energy gap/initial</label><b id="egap">—</b></div><div><label>formulas</label><span class="formulaText">r=‖b-Aμ‖/‖b-Ay‖<br>m=‖μ-x*‖/‖x*‖<br>g=ΔE/ΔE₀<br>ΔE₀=E(y)-E*</span></div></div>
     <div class="section"><h3>Graph</h3>
       <div class="stat"><span>variables</span><b id="vars">—</b></div>
       <div class="stat"><span>edges</span><b id="edges">—</b></div>
@@ -176,6 +177,6 @@ canvas{display:block; width:100%; height:100%}
   </aside>
 </div>
 
-<script src="gbp_static.js?v=chart-floor-1e12"></script>
+<script src="gbp_static.js?v=metric-labels-20260517"></script>
 </body>
 </html>
