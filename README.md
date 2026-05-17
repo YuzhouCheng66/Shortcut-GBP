@@ -23,7 +23,8 @@ The page opens with the recommended shortcut setting already loaded:
 | grid edge precision `w` | `100` |
 | random shortcuts | `10` |
 | shortcut precision | `3000` |
-| shortcut target | `current: z = μᵢ − μⱼ` |
+| max grid size | `100 × 100` |
+| shortcut target | `current: z = xₜ,i − xₜ,j` |
 | dynamic refresh | on |
 | refresh period `R` | `2` |
 | GBP steps per click | `70` |
@@ -72,7 +73,7 @@ Shortcut colors:
 Manual shortcuts: click one node, then another node. Manual edges stay fixed, but every `R` steps their target is refreshed as
 
 ```text
-z_ij = μ_i - μ_j
+z_ij = xₜ,i - xₜ,j
 ```
 
 and their messages are reset.
@@ -106,7 +107,7 @@ and their messages are reset.
 The main shortcut mode is:
 
 ```text
-current: z = μ_i - μ_j
+current: z = xₜ,i - xₜ,j
 ```
 
 This creates a **zero-residual shortcut**. It does not add a new physical measurement; it changes how correction information moves through GBP.
@@ -117,10 +118,9 @@ This creates a **zero-residual shortcut**. It does not add a new physical measur
 
 | metric | definition |
 |---|---|
-| residual / initial | `‖b - A μ‖ / ‖b - A y‖` |
-| energy gap | current energy minus MAP energy |
-| relative gap | energy gap normalized by the initial gap |
-| MAP error | `‖μ - x*‖ / ‖x*‖` |
+| residual / initial | `‖b - A xₜ‖ / ‖b - A x₀‖` |
+| energy gap / initial | `(E(xₜ) - E*) / (E(x₀) - E*)` |
+| MAP error | `‖xₜ - x*‖ / ‖x*‖` |
 
 The MAP reference `x*` is solved once when the graph is built.
 

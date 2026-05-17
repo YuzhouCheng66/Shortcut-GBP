@@ -1,15 +1,17 @@
 'use strict';
 
 const EPS = 1e-15;
+const GRID_MIN = 2, GRID_MAX = 100;
 const $ = id => document.getElementById(id);
 const grid = $('grid'), chart = $('chart');
 const ctx = grid.getContext('2d'), cctx = chart.getContext('2d');
 let S = null, selected = -1, hover = -1, running = false;
 
 function checkedRadio(name){ return document.querySelector(`input[name="${name}"]:checked`)?.value || ''; }
+function clampGridInput(){ const el=$('n'), raw=parseInt(el.value||10); const n=clamp(isFinite(raw)?raw:10,GRID_MIN,GRID_MAX); el.value=String(n); return n; }
 function val(id){ const el=$(id); if(el.type==='checkbox') return el.checked; const v=el.value; return isNaN(+v) ? v : +v; }
 function opts(){ return {
-  n:val('n'), p0:val('p0'), gridW:val('gridW'), shortcutW:val('shortcutW'), seed:val('seed'), prior:val('prior'), edgeMode:checkedRadio('edgeMode'),
+  n:clampGridInput(), p0:val('p0'), gridW:val('gridW'), shortcutW:val('shortcutW'), seed:val('seed'), prior:val('prior'), edgeMode:checkedRadio('edgeMode'),
   shortcutCount:val('shortcutCount'), targetMode:val('targetMode'), readout:val('readout'), refreshR:val('refreshR'), dynamicRandom:val('dynamicRandom'),
   anneal:val('anneal'), annealK:val('annealK'), steps:val('steps'), metricEvery:val('metricEvery'), damping:val('damping')
 };}
@@ -97,7 +99,7 @@ class GBPStateJS{
   constructor(){ this.initGrid({n:10,p0:1,gridW:100,shortcutW:3000,seed:0,prior:'random',edgeMode:'noisy'}); }
 
   initGrid(payload){
-    this.n = clamp(parseInt(payload.n ?? 10),2,80); this.N=this.n*this.n;
+    this.n = clamp(parseInt(payload.n ?? 10),GRID_MIN,GRID_MAX); this.N=this.n*this.n;
     this.p0 = Math.max(EPS, Number(payload.p0 ?? 1));
     this.gridW = Math.max(0, Number(payload.gridW ?? 100));
     this.shortcutW = Math.max(0, Number(payload.shortcutW ?? 100));
@@ -289,7 +291,7 @@ class GBPStateJS{
     const ref=this.buildSystemForReference(mode);
     const t0=performance.now();
     let x, solver, rel, iters=0;
-    if(mode==='base'){
+    if(mode==='base' && this.n<=GRID_MAX){
       const res=this.solveBandedCholesky(ref);
       x=res.x; solver='Frontend banded sparse Cholesky'; rel=res.rel; iters=0;
     } else {
@@ -473,6 +475,8 @@ $('resetBtn').onclick=()=>{ try{ STATE.resetMessages(); STATE.recordMetrics(Stri
 $('mapBtn').onclick=()=>{ try{ STATE.solveMapOnce('base'); STATE.recordMetrics(String(val('readout')||'base')); commit(); setStatus('Recomputed base MAP once.'); }catch(e){setStatus(e.message);} };
 $('runBtn').onclick=async()=>{ if(running) return; running=true; setStatus('Running frontend GBP…'); try{ const d=await runFrontend(opts()); setStatus(`Ran frontend GBP in ${fmt(d.runMs)} ms.`); }catch(e){setStatus(e.message);} running=false; };
 $('stopBtn').onclick=()=>{ running=false; setStatus('Stop requested.'); };
+$('n').oninput=()=>{ const el=$('n'), raw=parseInt(el.value); if(isFinite(raw) && raw>GRID_MAX) el.value=String(GRID_MAX); };
+$('n').onchange=clampGridInput;
 window.onresize=update;
 function loadDefaultDemo(){
   try{
