@@ -118,9 +118,9 @@ This creates a **zero-residual shortcut**. It does not add a new physical measur
 
 | metric | definition |
 |---|---|
-| residual / initial | `‖b - A xᵗ‖ / ‖b - A x⁰‖` |
+| residual / initial | `|b - A xᵗ| / |b - A x⁰|` |
 | energy gap / initial | `(E(xᵗ) - E*) / (E(x⁰) - E*)` |
-| MAP error | `‖xᵗ - x*‖ / ‖x*‖` |
+| MAP error | `|xᵗ - x*| / |x*|` |
 
 The MAP reference `x*` is solved once when the graph is built.
 
